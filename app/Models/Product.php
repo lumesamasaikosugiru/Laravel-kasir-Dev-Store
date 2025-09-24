@@ -18,4 +18,9 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+    public function orderDetail()//satu produk bisa muncul di banyak detail order.
+    {
+        return $this->hasMany(OrderDetail::class);
+    }
+
 }
