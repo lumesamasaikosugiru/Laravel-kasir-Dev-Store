@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -19,12 +20,14 @@ class ProductForm
                 TextInput::make('price')
                     ->required()
                     ->numeric()
-                    ->prefix('$'),
+                    ->prefix('IDR'),
                 TextInput::make('stock')
                     ->required()
                     ->numeric(),
-                TextInput::make('images')
-                    ->default(null),
+                FileUpload::make('images')
+                    ->default(null)
+                // TextInput::make('images')    
+                //     ->default(null),
             ]);
     }
 }
