@@ -50,9 +50,9 @@ class CustomerResource extends Resource
     {
         return [
             'index' => ListCustomers::route('/'),
-            'create' => CreateCustomer::route('/create'),
-            'view' => ViewCustomer::route('/{record}'),
-            'edit' => EditCustomer::route('/{record}/edit'),
+            // 'create' => CreateCustomer::route('/create'),
+            // 'view' => ViewCustomer::route('/{record}'),
+            // 'edit' => EditCustomer::route('/{record}/edit'),
         ];
     }
 }

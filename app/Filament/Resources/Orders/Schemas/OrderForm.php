@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\OrderDetail;
 use App\Models\Product;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -41,10 +42,10 @@ class OrderForm
                                 $set('address', $customer->address ?? null);
                             }),
 
-                        TextInput::make('phone')
-                            ->disabled(),
-                        TextInput::make('address')
-                            ->disabled(),
+                        Placeholder::make('phone')
+                            ->content(fn(Get $get) => Customer::find($get('customer_id'))?->phone ?? '-'),
+                        Placeholder::make('address')
+                            ->content(fn(Get $get) => Customer::find($get('customer_id'))?->address ?? '-'),
                     ])
                     ->columns(3)
                     ->columnSpanFull(),
@@ -58,6 +59,7 @@ class OrderForm
                                 Select::make('product_id')
                                     ->relationship('product', 'name')
                                     ->reactive()
+                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
                                         $product = Product::find($state);
                                         $price = $product->price ?? 0;
@@ -73,7 +75,11 @@ class OrderForm
                                     }),
 
                                 TextInput::make('price')
-                                    ->disabled(),
+                                    ->disabled()
+                                    ->numeric()
+                                    ->formatStateUsing(fn($state, Get $get)
+                                        => $state ?? Product::find($get('product_id'))?->price ?? 0),
+
                                 TextInput::make('qty')
                                     ->numeric()
                                     ->default(1)
@@ -97,7 +103,9 @@ class OrderForm
 
                 TextInput::make('total_price')
                     ->required()
-                    ->numeric()
+                    ->disabled()
+                    ->dehydrated()
+                    ->numeric(),
             ]);
     }
 }
