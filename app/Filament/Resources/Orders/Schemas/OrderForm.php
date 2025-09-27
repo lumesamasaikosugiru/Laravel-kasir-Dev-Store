@@ -24,110 +24,163 @@ class OrderForm
             ->components(
                 Group::make()
                     ->schema([
-                        DateTimePicker::make('date_sell')
-                            ->required()
-                            ->default(now())
-                            ->disabled()
-                            ->hiddenLabel()
-                            ->dehydrated()
-                            ->prefix('Date:')
-                            ->columnSpanFull(),
-
-                        // Bagian atas kiri: Customer Info
-                        Section::make('Customer Info')
-                            ->description('Data terkait pelanggan dan penjualan')
+                        // Bagian Kiri: Customer Info + Order Details
+                        Group::make()
                             ->schema([
-                                Select::make('customer_id')
-                                    ->relationship('customer', 'name')
+                                // Date di atas kiri
+                                DateTimePicker::make('date_sell')
                                     ->required()
-                                    ->reactive()
-                                    ->afterStateUpdated(function ($state, Set $set) {
-                                        $customer = Customer::find($state);
-                                        $set('phone', $customer->phone ?? null);
-                                        $set('address', $customer->address ?? null);
-                                    }),
+                                    ->default(now())
+                                    ->disabled()
+                                    ->hiddenLabel()
+                                    ->dehydrated()
+                                    ->prefix('Date:')
+                                    ->columnSpanFull(),
 
-                                Placeholder::make('phone')
-                                    ->content(fn(Get $get) => Customer::find($get('customer_id'))?->phone ?? '-'),
+                                // Customer Info
+                                Section::make('Customer Information')
+                                    ->description('Data terkait pelanggan dan penjualan')
+                                    ->schema([
+                                        Select::make('customer_id')
+                                            ->relationship('customer', 'name')
+                                            ->required()
+                                            ->reactive()
+                                            ->afterStateUpdated(function ($state, Set $set) {
+                                                $customer = Customer::find($state);
+                                                $set('phone', $customer->phone ?? null);
+                                                $set('address', $customer->address ?? null);
+                                            }),
 
-                                Placeholder::make('address')
-                                    ->content(fn(Get $get) => Customer::find($get('customer_id'))?->address ?? '-'),
+                                        Placeholder::make('phone')
+                                            ->content(fn(Get $get) => Customer::find($get('customer_id'))?->phone ?? '-'),
+
+                                        Placeholder::make('address')
+                                            ->content(fn(Get $get) => Customer::find($get('customer_id'))?->address ?? '-'),
+                                    ])
+                                    ->columns(3)
+                                    ->columnSpanFull(),
+
+                                // Order Details
+                                Section::make('Order Details')
+                                    ->description('Data produk terjual')
+                                    ->schema([
+                                        Repeater::make('OrderDetail')
+                                            ->relationship()
+                                            ->schema([
+                                                Select::make('product_id')
+                                                    ->relationship('product', 'name')
+                                                    ->reactive()
+                                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                                        $product = Product::find($state);
+                                                        $price = $product->price ?? 0;
+                                                        $set('price', $price);
+
+                                                        $qty = $get('qty') ?? 1;
+                                                        $set('qty', $qty);
+
+                                                        $subtotal = $price * $qty;
+                                                        $set('subtotal', $subtotal);
+
+                                                        $items = $get('../../OrderDetail') ?? [];
+                                                        $total = collect($items)->sum(fn($item) => $item['subtotal'] ?? 0);
+                                                        $set('../../total_price', $total);
+
+                                                        $discount = $get('../../discount');
+                                                        $discount_amount = $total * $discount / 100;
+                                                        $set('../../discount_amount', $discount_amount);
+                                                        $set('../../total_payment', $total - $discount);
+                                                    }),
+
+                                                TextInput::make('price')
+                                                    ->disabled()
+                                                    ->numeric()
+                                                    ->dehydrated()
+                                                    ->formatStateUsing(
+                                                        fn($state, Get $get) =>
+                                                        $state ?? Product::find($get('product_id'))?->price ?? 0
+                                                    ),
+
+                                                TextInput::make('qty')
+                                                    ->numeric()
+                                                    ->default(1)
+                                                    ->reactive()
+                                                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                                        $price = $get('price') ?? 0;
+                                                        $set('subtotal', $price * $state);
+
+                                                        $items = $get('../../OrderDetail') ?? [];
+                                                        $total = collect($items)->sum(fn($item) => $item['subtotal'] ?? 0);
+                                                        $set('../../total_price', $total);
+
+
+                                                        $discount = $get('../../discount');
+                                                        $discount_amount = $total * $discount / 100;
+                                                        $set('../../discount_amount', $discount_amount);
+                                                        $set('../../total_payment', $total - $discount);
+
+                                                    }),
+
+                                                TextInput::make('subtotal')
+                                                    ->disabled()
+                                                    ->numeric()
+                                                    ->dehydrated(),
+                                            ])
+                                            ->columns(2),
+                                    ])
+                                    ->columnSpanFull(),
                             ])
-                            ->columns(2)
-                            ->columnSpan(2), // ambil 2 kolom dari grid utama
+                            ->columnSpan(4), // kiri
 
-                        // Bagian atas kanan: Informasi Pembayaran
-                        Section::make('Informasi Pembayaran')
+                        // Bagian Kanan: Payment Info
+                        Section::make('Payment Information')
                             ->description('Metode & status pembayaran')
                             ->schema([
-                                // Total harga di samping
+                                Select::make('status')
+                                    ->options([
+                                        'New' => 'New',
+                                        'Processing' => 'Processing',
+                                        'Cancelled' => 'Cancelled',
+                                        'Completed' => 'Completed',
+                                    ])
+                                    ->columnSpanFull()
+                                    ->default('New'),
+
                                 TextInput::make('total_price')
                                     ->required()
                                     ->disabled()
                                     ->dehydrated()
                                     ->numeric()
-                                    ->columnSpanFull()
-                            ]),
-                        // Bagian bawah full: Detail Penjualan
-                        Section::make('Detail Penjualan')
-                            ->description('Data produk terjual')
-                            ->schema([
-                                Repeater::make('OrderDetail')
-                                    ->relationship()
-                                    ->schema([
-                                        Select::make('product_id')
-                                            ->relationship('product', 'name')
-                                            ->reactive()
-                                            ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
-                                                $product = Product::find($state);
-                                                $price = $product->price ?? 0;
-                                                $set('price', $price);
-                                                $qty = $get('qty') ?? 1;
-                                                $set('qty', $qty);
-                                                $subtotal = $price * $qty;
-                                                $set('subtotal', $subtotal);
+                                    ->columnSpanFull(),
 
-                                                $items = $get('../../OrderDetail') ?? [];
-                                                $total = collect($items)->sum(fn($item) => $item['subtotal'] ?? 0);
-                                                $set('../../total_price', $total);
-                                            }),
+                                TextInput::make('discount')
+                                    ->columnSpan(1)
+                                    ->numeric()
+                                    ->reactive()
+                                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                        $discount = floatval($state) ?? 0;
+                                        $total_price = $get('total_price') ?? 0;
+                                        $discount_amount = $total_price * $discount / 100;
+                                        $set('discount_amount', $discount_amount);
+                                        $set('total_payment', $total_price - $discount_amount);
+                                    }),
 
-                                        TextInput::make('price')
-                                            ->disabled()
-                                            ->numeric()
-                                            ->dehydrated()
-                                            ->formatStateUsing(
-                                                fn($state, Get $get) =>
-                                                $state ?? Product::find($get('product_id'))?->price ?? 0
-                                            ),
+                                TextInput::make('discount_amount')
+                                    ->disabled()
+                                    ->dehydrated()
+                                    ->columnSpan(3),
 
-                                        TextInput::make('qty')
-                                            ->numeric()
-                                            ->default(1)
-                                            ->reactive()
-                                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
-                                                $price = $get('price') ?? 0;
-                                                $set('subtotal', $price * $state);
-
-                                                $items = $get('../../OrderDetail') ?? [];
-                                                $total = collect($items)->sum(fn($item) => $item['subtotal'] ?? 0);
-                                                $set('../../total_price', $total);
-                                            }),
-
-                                        TextInput::make('subtotal')
-                                            ->disabled()
-                                            ->numeric()
-                                            ->dehydrated(),
-                                    ])
-                                    ->columns(2)
+                                TextInput::make('total_payment')
+                                    ->disabled()
+                                    ->dehydrated()
+                                    ->prefix('IDR')
                                     ->columnSpanFull(),
                             ])
-                            ->columnSpanFull(),
-
+                            ->columns(4)
+                            ->columnSpan(2), // kanan
                     ])
-                    ->columns(4)
-                    ->columnSpanFull() // grid utama 3 kolom
+                    ->columns(6) // grid utama
+                    ->columnSpanFull()
             );
     }
 
