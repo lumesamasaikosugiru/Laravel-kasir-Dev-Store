@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Orders\RelationManagers;
 use App\Filament\Resources\Products\ProductResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -18,6 +19,9 @@ class OrderDetailRelationManager extends RelationManager
     {
         return $table
             ->columns([
+                ImageColumn::make('product.images')
+                    ->label('Gambar')
+                    ->size(80),
                 TextColumn::make('product.name')
                     ->label('Product'),
                 TextColumn::make('product.price')

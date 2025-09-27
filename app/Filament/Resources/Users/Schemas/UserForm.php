@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Facades\Hash;
 use Filament\Schemas\Schema;
@@ -16,6 +18,7 @@ class UserForm
                     ->required(),
                 TextInput::make('email')
                     ->required(),
+                DateTimePicker::make('email_verified_at'),
                 TextInput::make('password')
                     ->password()
                     ->dehydrateStateUsing(fn(string $state): string => Hash::make($state))

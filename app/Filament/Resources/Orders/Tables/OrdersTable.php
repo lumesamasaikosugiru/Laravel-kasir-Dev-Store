@@ -18,7 +18,8 @@ class OrdersTable
             ->columns([
                 TextColumn::make('customer.name')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('total_price')
                     ->numeric()
                     ->sortable(),
