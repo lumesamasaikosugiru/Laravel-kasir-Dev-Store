@@ -13,6 +13,7 @@ class OrderInfolist
             ->components([
                 TextEntry::make('customer_id')
                     ->numeric(),
+                TextEntry::make('customer.name'),
                 TextEntry::make('total_price')
                     ->numeric(),
                 TextEntry::make('date_sell')
