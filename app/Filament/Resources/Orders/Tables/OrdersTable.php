@@ -17,19 +17,39 @@ class OrdersTable
         return $table
             ->columns([
                 TextColumn::make('customer.name')
-                    ->numeric()
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('total_price')
-                    ->numeric()
+                    ->money('idr', true)
                     ->sortable(),
+
+                TextColumn::make('discount')
+                    ->suffix('%'),
+
+                TextColumn::make('discount_amount')
+                    ->money('idr', true),
+
+                TextColumn::make('total_payment')
+                    ->money('idr', true),
+
+                TextColumn::make('status')
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'New' => 'info',
+                        'Processing' => 'warning',
+                        'Cancelled' => 'danger',
+                        'Completed' => 'success',
+                    }),
+
                 TextColumn::make('date_sell')
                     ->date()
                     ->sortable(),
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -39,8 +59,8 @@ class OrdersTable
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+                // ViewAction::make(),
+                // EditAction::make(),
                 DeleteAction::make(),
             ])
             ->toolbarActions([

@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->enum('status', ['New', 'Processing', 'Cancelled', 'Complete'])->default('new');
+            $table->enum('status', ['New', 'Processing', 'Cancelled', 'Completed'])->default('new');
             $table->integer('discount');
             $table->decimal('discount_amount', 10, 2);
             $table->decimal('total_payment', 10, 2);

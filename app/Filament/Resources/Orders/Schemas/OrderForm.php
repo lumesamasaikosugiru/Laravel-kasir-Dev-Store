@@ -15,6 +15,8 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Forms\Components\Actions\Action;
+
 
 class OrderForm
 {
@@ -43,6 +45,7 @@ class OrderForm
                                     ->schema([
                                         Select::make('customer_id')
                                             ->relationship('customer', 'name')
+                                            ->label('Name')
                                             ->required()
                                             ->reactive()
                                             ->afterStateUpdated(function ($state, Set $set) {
@@ -93,9 +96,9 @@ class OrderForm
                                                     }),
 
                                                 TextInput::make('price')
-                                                    ->disabled()
+                                                    ->readOnly()
                                                     ->numeric()
-                                                    ->dehydrated()
+                                                    ->prefix('IDR')
                                                     ->formatStateUsing(
                                                         fn($state, Get $get) =>
                                                         $state ?? Product::find($get('product_id'))?->price ?? 0
@@ -103,6 +106,7 @@ class OrderForm
 
                                                 TextInput::make('qty')
                                                     ->numeric()
+                                                    ->minValue(1)
                                                     ->default(1)
                                                     ->reactive()
                                                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
@@ -122,11 +126,15 @@ class OrderForm
                                                     }),
 
                                                 TextInput::make('subtotal')
-                                                    ->disabled()
+                                                    ->readOnly()
                                                     ->numeric()
-                                                    ->dehydrated(),
+                                                    ->default(0)
+                                                    ->prefix('IDR'),
                                             ])
-                                            ->columns(2),
+                                            ->columns(2)
+                                            ->hiddenLabel()
+                                            ->addActionLabel(' ➕ Add Product')
+
                                     ])
                                     ->columnSpanFull(),
                             ])
@@ -148,14 +156,18 @@ class OrderForm
 
                                 TextInput::make('total_price')
                                     ->required()
-                                    ->disabled()
-                                    ->dehydrated()
+                                    ->readOnly()
                                     ->numeric()
-                                    ->columnSpanFull(),
+                                    ->columnSpanFull()
+                                    ->prefix('IDR')
+                                    ->default(0),
 
                                 TextInput::make('discount')
-                                    ->columnSpan(1)
+                                    ->columnSpan(2)
                                     ->numeric()
+                                    ->minValue(1)
+                                    ->maxValue(80)
+                                    ->suffix('%')
                                     ->reactive()
                                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
                                         $discount = floatval($state) ?? 0;
@@ -166,17 +178,18 @@ class OrderForm
                                     }),
 
                                 TextInput::make('discount_amount')
-                                    ->disabled()
-                                    ->dehydrated()
-                                    ->columnSpan(3),
+                                    ->default(0)
+                                    ->readOnly()
+                                    ->columnSpan(3)
+                                    ->prefix('IDR'),
 
                                 TextInput::make('total_payment')
-                                    ->disabled()
-                                    ->dehydrated()
+                                    ->readOnly()
                                     ->prefix('IDR')
-                                    ->columnSpanFull(),
+                                    ->columnSpanFull()
+                                    ->default(0),
                             ])
-                            ->columns(4)
+                            ->columns(5)
                             ->columnSpan(2), // kanan
                     ])
                     ->columns(6) // grid utama

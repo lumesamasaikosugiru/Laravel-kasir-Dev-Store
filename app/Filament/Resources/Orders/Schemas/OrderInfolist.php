@@ -14,14 +14,20 @@ class OrderInfolist
                 TextEntry::make('customer_id')
                     ->numeric(),
                 TextEntry::make('customer.name'),
+
                 TextEntry::make('total_price')
-                    ->numeric(),
+                    ->numeric()
+                    ->money('idr', true),
+
                 TextEntry::make('date_sell')
                     ->date(),
+
                 TextEntry::make('created_at')
                     ->dateTime(),
+
                 TextEntry::make('updated_at')
                     ->dateTime(),
-            ]);
+            ])
+            ->columns(3);
     }
 }
