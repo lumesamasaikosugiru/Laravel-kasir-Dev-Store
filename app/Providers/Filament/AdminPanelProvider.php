@@ -27,6 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->databaseNotifications()
             ->login()
             ->brandName('DEVI STORE | Beauti & Fashions')
             ->colors([

@@ -14,7 +14,9 @@ class Order extends Model
         'status',
         'discount',
         'discount_amount',
-        'total_payment'
+        'total_payment',
+        'payment_method',
+        'payment_status'
 
     ];
 

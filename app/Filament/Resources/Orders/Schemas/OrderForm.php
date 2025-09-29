@@ -163,7 +163,7 @@ class OrderForm
                                     ->default(0),
 
                                 TextInput::make('discount')
-                                    ->columnSpan(2)
+                                    ->columnSpan(3)
                                     ->numeric()
                                     ->minValue(0)
                                     ->maxValue(80)
@@ -188,8 +188,27 @@ class OrderForm
                                     ->prefix('IDR')
                                     ->columnSpanFull()
                                     ->default(0),
+
+                                Select::make('payment_method')
+                                    ->label('Payment Method')
+                                    ->columnSpan(3)
+                                    ->options([
+                                        'Cash' => 'Cash',
+                                        'Credit' => 'Credit',
+                                        'Debit' => 'Debit',
+                                        'Qris' => 'Qris',
+                                    ])->default('Cash'),
+
+                                Select::make('payment_status')
+                                    ->label('Payment Status')
+                                    ->columnSpan(3)
+                                    ->options([
+                                        'Paid' => 'Paid',
+                                        'Unpaid' => 'Unpaid',
+                                        'Failed' => 'Failed',
+                                    ])->default('Unpaid')
                             ])
-                            ->columns(5)
+                            ->columns(6)
                             ->columnSpan(2), // kanan
                     ])
                     ->columns(6) // grid utama

@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\Orders\Tables;
 
+use App\Filament\Exports\OrderExporter;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -35,6 +37,17 @@ class OrdersTable
 
                 TextColumn::make('total_payment')
                     ->money('idr', true),
+
+                TextColumn::make('payment_status')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'Paid' => 'success',
+                        'Unpaid' => 'warning',
+                    }),
+
+                TextColumn::make('payment_method')
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('status')
                     ->badge()
@@ -74,6 +87,9 @@ class OrdersTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
+            ])
+            ->headerActions([
+                ExportAction::make()->exporter(OrderExporter::class)
             ]);
     }
 }
