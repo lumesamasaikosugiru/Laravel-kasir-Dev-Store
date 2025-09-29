@@ -165,7 +165,7 @@ class OrderForm
                                 TextInput::make('discount')
                                     ->columnSpan(2)
                                     ->numeric()
-                                    ->minValue(1)
+                                    ->minValue(0)
                                     ->maxValue(80)
                                     ->suffix('%')
                                     ->reactive()

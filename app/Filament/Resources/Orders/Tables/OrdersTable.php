@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Orders\Tables;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -16,6 +17,9 @@ class OrdersTable
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->label('Order ID'),
+
                 TextColumn::make('customer.name')
                     ->sortable()
                     ->searchable(),
@@ -59,9 +63,12 @@ class OrdersTable
                 //
             ])
             ->recordActions([
-                // ViewAction::make(),
-                // EditAction::make(),
-                DeleteAction::make(),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make(),
+
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
