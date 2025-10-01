@@ -8,6 +8,8 @@ class Category extends Model
 {
     protected $fillable = [
         'name',
+        'images',
+        'is_active',
     ];
 
 
@@ -15,4 +17,10 @@ class Category extends Model
     {
         return $this->hasMany(Product::class);
     }
+    public function subcategories()
+    {
+        return $this->hasMany(SubCategory::class);
+    }
+
+
 }

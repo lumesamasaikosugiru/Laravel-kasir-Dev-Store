@@ -90,6 +90,11 @@ class OrdersTable
             ])
             ->headerActions([
                 ExportAction::make()->exporter(OrderExporter::class)
+                    ->label('Export to Excel/Csv')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('success')
+
+                //lanjut video ke 14
             ]);
     }
 }

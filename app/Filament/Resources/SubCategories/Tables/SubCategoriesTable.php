@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Categories\Tables;
+namespace App\Filament\Resources\SubCategories\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -12,16 +12,19 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class CategoriesTable
+class SubCategoriesTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('name')
-                    ->searchable(),
                 ImageColumn::make('images')
-                    ->size(70)
+                    ->size(80)
+                    ->searchable(),
+                TextColumn::make('category.name')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('name')
                     ->searchable(),
                 IconColumn::make('is_active')
                     ->boolean(),

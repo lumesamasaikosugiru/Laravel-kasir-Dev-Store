@@ -11,6 +11,7 @@ use App\Filament\Resources\Products\Schemas\ProductInfolist;
 use App\Filament\Resources\Products\Tables\ProductsTable;
 use App\Models\Product;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -21,9 +22,13 @@ class ProductResource extends Resource
     protected static ?string $model = Product::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Tag;
-
+    protected static string|UnitEnum|null $navigationGroup = 'Product Management';
+    //NANTI AKAN DIURUTKAN UNTUK NAVIGASINYA
     protected static ?string $recordTitleAttribute = 'Products';
-
+    public static function getNavigationSort(): ?int
+    {
+        return 2;
+    }
     public static function form(Schema $schema): Schema
     {
         return ProductForm::configure($schema);

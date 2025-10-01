@@ -1,27 +1,29 @@
 <?php
 
-namespace App\Filament\Resources\Categories\Schemas;
+namespace App\Filament\Resources\SubCategories\Schemas;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
-class CategoryForm
+class SubCategoryForm
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema
             ->components([
+                Select::make('category_id')
+                    ->relationship('category', 'name')
+                    ->required(),
                 TextInput::make('name')
                     ->required(),
                 FileUpload::make('images')
                     ->default(null)
-                    ->maxSize(2048)
-                    ->directory('Products\Brands'),
+                    ->maxSize(2048),
                 Toggle::make('is_active')
                     ->required(),
-            ])
-            ->columns(2);
+            ]);
     }
 }

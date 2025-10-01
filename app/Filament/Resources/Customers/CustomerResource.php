@@ -11,6 +11,7 @@ use App\Filament\Resources\Customers\Schemas\CustomerInfolist;
 use App\Filament\Resources\Customers\Tables\CustomersTable;
 use App\Models\Customer;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -21,6 +22,9 @@ class CustomerResource extends Resource
     protected static ?string $model = Customer::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::UserPlus;
+    protected static string|UnitEnum|null $navigationGroup = 'Users Management';
+    //NANTI AKAN DIURUTKAN UNTUK NAVIGASINYA
+
 
     protected static ?string $recordTitleAttribute = 'Customers';
 
