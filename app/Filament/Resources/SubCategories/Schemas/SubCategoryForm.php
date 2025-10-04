@@ -14,14 +14,14 @@ class SubCategoryForm
     {
         return $schema
             ->components([
+                FileUpload::make('images')
+                    ->default(null)
+                    ->maxSize(2048),
                 Select::make('category_id')
                     ->relationship('category', 'name')
                     ->required(),
                 TextInput::make('name')
                     ->required(),
-                FileUpload::make('images')
-                    ->default(null)
-                    ->maxSize(2048),
                 Toggle::make('is_active')
                     ->required(),
             ]);

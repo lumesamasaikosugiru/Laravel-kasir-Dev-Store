@@ -94,7 +94,6 @@ class OrdersTable
                     ->icon('heroicon-o-document-arrow-down')
                     ->color('success')
 
-                //lanjut video ke 14
             ]);
     }
 }

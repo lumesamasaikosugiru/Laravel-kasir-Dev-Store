@@ -11,4 +11,6 @@ class Brand extends Model
         'images',
         'is_active',
     ];
+
+
 }

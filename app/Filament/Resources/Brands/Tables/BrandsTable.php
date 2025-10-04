@@ -18,10 +18,10 @@ class BrandsTable
     {
         return $table
             ->columns([
-                TextColumn::make('name')
-                    ->searchable(),
                 ImageColumn::make('images')
                     ->size(70)
+                    ->searchable(),
+                TextColumn::make('name')
                     ->searchable(),
                 IconColumn::make('is_active')
                     ->boolean(),

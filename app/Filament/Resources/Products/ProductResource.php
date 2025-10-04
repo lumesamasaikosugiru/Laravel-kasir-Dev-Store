@@ -21,14 +21,13 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::Tag;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
     protected static string|UnitEnum|null $navigationGroup = 'Product Management';
     //NANTI AKAN DIURUTKAN UNTUK NAVIGASINYA
+
+
     protected static ?string $recordTitleAttribute = 'Products';
-    public static function getNavigationSort(): ?int
-    {
-        return 2;
-    }
+
     public static function form(Schema $schema): Schema
     {
         return ProductForm::configure($schema);

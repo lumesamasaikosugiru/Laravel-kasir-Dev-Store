@@ -25,12 +25,12 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->sidebarFullyCollapsibleOnDesktop()
             ->id('admin')
             ->path('admin')
             ->databaseNotifications()
             ->login()
             ->brandName('DEVI STORE | Beauti & Fashions')
+            ->sidebarCollapsibleOnDesktop()
             ->colors([
                 'primary' => Color::Pink,
             ])
