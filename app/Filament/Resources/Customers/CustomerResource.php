@@ -11,11 +11,12 @@ use App\Filament\Resources\Customers\Schemas\CustomerInfolist;
 use App\Filament\Resources\Customers\Tables\CustomersTable;
 use App\Models\Customer;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use UnitEnum;
 
 class CustomerResource extends Resource
 {
@@ -23,10 +24,32 @@ class CustomerResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::UserPlus;
     protected static string|UnitEnum|null $navigationGroup = 'Users Management';
-    //NANTI AKAN DIURUTKAN UNTUK NAVIGASINYA
 
+    protected static ?int $navigationSort = 7;
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return "Number of active customers";
+    }
 
-    protected static ?string $recordTitleAttribute = 'Customers';
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'phone', 'address'];
+    }
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'name' => $record->name,
+            'phone' => $record->phone,
+            'address' => $record->address,
+        ];
+    }
+
+    //===========================================================================
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Schema $schema): Schema
     {

@@ -23,9 +23,10 @@ class SubCategoryResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedInboxStack;
     protected static string|UnitEnum|null $navigationGroup = 'Product Management';
-    //NANTI AKAN DIURUTKAN UNTUK NAVIGASINYA
+    protected static ?int $navigationSort = 5;
 
-    protected static ?string $recordTitleAttribute = 'Sub Categories';
+    //===========================================================================
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Schema $schema): Schema
     {

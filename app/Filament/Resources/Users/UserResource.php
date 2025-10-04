@@ -11,6 +11,7 @@ use App\Filament\Resources\Users\Schemas\UserInfolist;
 use App\Filament\Resources\Users\Tables\UsersTable;
 use App\Models\User;
 use BackedEnum;
+use Illuminate\Database\Eloquent\Model;
 use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -23,11 +24,23 @@ class UserResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::UserCircle;
     protected static string|UnitEnum|null $navigationGroup = 'Users Management';
-    //NANTI AKAN DIURUTKAN UNTUK NAVIGASINYA
+    protected static ?int $navigationSort = 8;
 
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'email'];
+    }
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'name' => $record->name,
+            'email' => $record->email,
+        ];
+    }
+
+    //===========================================================================
     protected static ?string $recordTitleAttribute = 'Users';
-
     public static function form(Schema $schema): Schema
     {
         return UserForm::configure($schema);

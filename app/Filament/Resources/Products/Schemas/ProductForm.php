@@ -80,9 +80,7 @@ class ProductForm
                             ->readOnly()
                             ->dehydrated(),
 
-                        TextInput::make('barcode')
-                            ->readOnly()
-                            ->dehydrated(),
+                        TextInput::make('barcode'),
 
                         Group::make([
 

@@ -11,23 +11,44 @@ use App\Filament\Resources\Products\Schemas\ProductInfolist;
 use App\Filament\Resources\Products\Tables\ProductsTable;
 use App\Models\Product;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use UnitEnum;
 
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShoppingBag;
     protected static string|UnitEnum|null $navigationGroup = 'Product Management';
-    //NANTI AKAN DIURUTKAN UNTUK NAVIGASINYA
+    protected static ?int $navigationSort = 3;
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('is_active', true)->count();
+    }
 
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return "Number of active products";
+    }
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'sku', 'barqode', 'category.name', 'sub_category.name', 'brand.name'];
+    }
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'name' => $record->name,
+            'sku' => $record->sku,
+            'barqode' => $record->barqode,
+        ];
+    }
+    //===========================================================================
 
-    protected static ?string $recordTitleAttribute = 'Products';
-
+    protected static ?string $recordTitleAttribute = 'name';
     public static function form(Schema $schema): Schema
     {
         return ProductForm::configure($schema);

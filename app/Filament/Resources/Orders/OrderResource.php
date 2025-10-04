@@ -16,6 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class OrderResource extends Resource
 {
@@ -23,7 +24,35 @@ class OrderResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::ShoppingCart;
 
-    protected static ?string $recordTitleAttribute = 'Orders';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('status', 'new')->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getModel()::count() > 0 ? 'info' : 'primary';
+    }
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return "Number of New orders must be completed";
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['id', 'customer.name',];
+    }
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'id' => $record->id,
+            'customer_id' => $record->customer_name,
+        ];
+    }
+
+    //===========================================================================
+    protected static ?string $recordTitleAttribute = 'customer.name';
 
     public static function form(Schema $schema): Schema
     {

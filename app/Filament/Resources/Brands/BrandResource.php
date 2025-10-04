@@ -11,11 +11,12 @@ use App\Filament\Resources\Brands\Schemas\BrandInfolist;
 use App\Filament\Resources\Brands\Tables\BrandsTable;
 use App\Models\Brand;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use UnitEnum;
 
 class BrandResource extends Resource
 {
@@ -23,10 +24,20 @@ class BrandResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
     protected static string|UnitEnum|null $navigationGroup = 'Product Management';
-    //NANTI AKAN DIURUTKAN UNTUK NAVIGASINYA
+    protected static ?int $navigationSort = 4;
 
-
-    protected static ?string $recordTitleAttribute = 'Brands';
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name',];
+    }
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'name' => $record->name,
+        ];
+    }
+    //===========================================================================
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Schema $schema): Schema
     {

@@ -17,7 +17,7 @@ class ProductsTable
 {
     public static function configure(Table $table): Table
     {
-        return $table //lanjut lagi part 17 | 03:50
+        return $table //lanjut lagi part 18
             ->columns([
                 ImageColumn::make('images')
                     ->size(80)
