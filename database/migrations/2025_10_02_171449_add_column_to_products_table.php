@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->decimal('base_price')->after('price')->nullable();
+            $table->decimal('base_price', 15, 2)->after('price')->nullable();
             $table->string('sku')->after('stock')->nullable()->unique();
             $table->string('barqode')->after('sku')->nullable()->unique();
             $table->text('description')->after('is_active')->nullable();

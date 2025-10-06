@@ -16,6 +16,21 @@ class OrderDetail extends Model
     ];
 
 
+    protected static function booted()
+    {
+        static::created(function ($orderDetail) {
+
+            if ($orderDetail->order->status === 'Completed') {
+                $product = $orderDetail->product;
+
+                if ($product) {
+                    $product->decrement('stock', $orderDetail->qty);
+                }
+            }
+        });
+    }
+
+
     public function product()
     {
         return $this->belongsTo(Product::class);

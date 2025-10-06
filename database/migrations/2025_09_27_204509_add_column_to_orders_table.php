@@ -13,8 +13,8 @@ return new class extends Migration {
         Schema::table('orders', function (Blueprint $table) {
             $table->enum('status', ['New', 'Processing', 'Cancelled', 'Completed'])->default('new');
             $table->integer('discount');
-            $table->decimal('discount_amount', 10, 2);
-            $table->decimal('total_payment', 10, 2);
+            $table->decimal('discount_amount', 15, 2);
+            $table->decimal('total_payment', 15, 2);
         });
     }
 

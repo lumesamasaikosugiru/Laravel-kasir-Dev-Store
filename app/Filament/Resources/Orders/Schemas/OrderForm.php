@@ -101,6 +101,7 @@ class OrderForm
                                                         $set('../../total_payment', $total - $discount);
                                                     })
                                                     ->columnSpanFull()
+                                                    ->placeholder('Type for select')
                                                     ->searchable(),
 
                                                 TextInput::make('qty')
@@ -122,7 +123,13 @@ class OrderForm
                                                         $set('../../discount_amount', $discount_amount);
                                                         $set('../../total_payment', $total - $discount);
 
-                                                    })->columnSpan(1),
+                                                    })
+                                                    ->maxValue(function (Get $get) {
+                                                        $productID = $get('product_id');
+                                                        $product = Product::find($productID);
+                                                        return $product?->stock ?? 0;
+                                                    })
+                                                    ->columnSpan(1),
 
                                                 TextInput::make('price')
                                                     ->readOnly()
@@ -166,6 +173,7 @@ class OrderForm
                                 TextInput::make('total_price')
                                     ->required()
                                     ->readOnly()
+                                    ->dehydrated()
                                     ->numeric()
                                     ->columnSpanFull()
                                     ->prefix('IDR')
