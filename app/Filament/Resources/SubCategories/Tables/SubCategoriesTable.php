@@ -22,11 +22,11 @@ class SubCategoriesTable
                 ImageColumn::make('images')
                     ->size(80)
                     ->searchable(),
+                TextColumn::make('name')
+                    ->searchable(),
                 TextColumn::make('category.name')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('name')
-                    ->searchable(),
                 IconColumn::make('is_active')
                     ->boolean(),
                 TextColumn::make('created_at')

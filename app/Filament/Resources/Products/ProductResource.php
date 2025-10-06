@@ -41,9 +41,12 @@ class ProductResource extends Resource
     public static function getGlobalSearchResultDetails(Model $record): array
     {
         return [
-            'name' => $record->name,
-            'sku' => $record->sku,
-            'barqode' => $record->barqode,
+            'Product' => $record->name ?? 'N/A',
+            'SKU' => $record->sku ?? 'N/A',
+            'Barqode' => $record->barqode ?? 'N/A',
+            'Brand' => $record->brand?->name ?? 'N/A',
+            'Category' => $record->category?->name ?? 'N/A',
+            'Sub Category' => $record->sub_category?->name ?? 'N/A',
         ];
     }
     //===========================================================================

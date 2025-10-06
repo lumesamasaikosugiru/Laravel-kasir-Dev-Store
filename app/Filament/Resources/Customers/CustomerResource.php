@@ -42,9 +42,9 @@ class CustomerResource extends Resource
     public static function getGlobalSearchResultDetails(Model $record): array
     {
         return [
-            'name' => $record->name,
-            'phone' => $record->phone,
-            'address' => $record->address,
+            'Name' => $record->name ?? 'N/A',
+            'Phone' => $record->phone ?? 'N/A',
+            'Address' => $record->address ?? 'N/A',
         ];
     }
 

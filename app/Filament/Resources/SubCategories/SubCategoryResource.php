@@ -11,11 +11,12 @@ use App\Filament\Resources\SubCategories\Schemas\SubCategoryInfolist;
 use App\Filament\Resources\SubCategories\Tables\SubCategoriesTable;
 use App\Models\SubCategory;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use UnitEnum;
 
 class SubCategoryResource extends Resource
 {
@@ -24,6 +25,18 @@ class SubCategoryResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedInboxStack;
     protected static string|UnitEnum|null $navigationGroup = 'Product Management';
     protected static ?int $navigationSort = 5;
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'category.name'];
+    }
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Sub Category' => $record->name ?? 'N/A',
+            'Category From' => $record->category?->name ?? 'N/A',
+        ];
+    }
 
     //===========================================================================
     protected static ?string $recordTitleAttribute = 'name';

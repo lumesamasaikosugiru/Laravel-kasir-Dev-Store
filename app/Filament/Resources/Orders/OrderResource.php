@@ -41,13 +41,16 @@ class OrderResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['id', 'customer.name',];
+        return ['id', 'customer.name', 'date_sell', 'total_payment', 'status',];
     }
     public static function getGlobalSearchResultDetails(Model $record): array
     {
         return [
-            'id' => $record->id,
-            'customer_id' => $record->customer_name,
+            'Order ID' => $record->id ?? 'N/A',
+            'Customer Name' => $record->customer?->name ?? 'N/A',
+            'Date Sell' => $record->date_sell ?? 'N/A',
+            'Total Payment' => $record->total_payment ?? 'N/A',
+            'Order Status' => $record->status ?? 'N/A',
         ];
     }
 
