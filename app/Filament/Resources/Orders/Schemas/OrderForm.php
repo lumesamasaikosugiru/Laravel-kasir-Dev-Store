@@ -5,17 +5,19 @@ namespace App\Filament\Resources\Orders\Schemas;
 use App\Models\Customer;
 use App\Models\OrderDetail;
 use App\Models\Product;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Filament\Forms\Components\Actions\Action;
 
 
 class OrderForm
@@ -52,16 +54,20 @@ class OrderForm
                                                 $customer = Customer::find($state);
                                                 $set('phone', $customer->phone ?? null);
                                                 $set('address', $customer->address ?? null);
-                                            }),
+                                            })->createOptionForm([
+                                                    TextInput::make('name'),
+                                                    TextInput::make('phone'),
+                                                    TextInput::make('address'),
+                                                ])
+                                            ->columnSpanFull(),
 
                                         Placeholder::make('phone')
-                                            ->content(fn(Get $get) => Customer::find($get('customer_id'))?->phone ?? '-'),
+                                            ->content(fn(Get $get) => Customer::find($get('customer_id'))?->phone ?? '-')->columnSpan(2),
 
                                         Placeholder::make('address')
-                                            ->content(fn(Get $get) => Customer::find($get('customer_id'))?->address ?? '-'),
+                                            ->content(fn(Get $get) => Customer::find($get('customer_id'))?->address ?? '-')->columnSpan(2),
                                     ])
-                                    ->columns(3)
-                                    ->columnSpanFull(),
+                                    ->columns(4),
 
                                 // Order Details
                                 Section::make('Order Details')
@@ -71,7 +77,7 @@ class OrderForm
                                             ->relationship()
                                             ->schema([
                                                 Select::make('product_id')
-                                                    ->relationship('product', 'name')
+                                                    ->relationship('product', 'name', fn($query) => $query->where('is_active', true))
                                                     ->reactive()
                                                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                                     ->afterStateUpdated(function ($state, Set $set, Get $get) {
@@ -93,16 +99,9 @@ class OrderForm
                                                         $discount_amount = $total * $discount / 100;
                                                         $set('../../discount_amount', $discount_amount);
                                                         $set('../../total_payment', $total - $discount);
-                                                    }),
-
-                                                TextInput::make('price')
-                                                    ->readOnly()
-                                                    ->numeric()
-                                                    ->prefix('IDR')
-                                                    ->formatStateUsing(
-                                                        fn($state, Get $get) =>
-                                                        $state ?? Product::find($get('product_id'))?->price ?? 0
-                                                    ),
+                                                    })
+                                                    ->columnSpanFull()
+                                                    ->searchable(),
 
                                                 TextInput::make('qty')
                                                     ->numeric()
@@ -123,20 +122,30 @@ class OrderForm
                                                         $set('../../discount_amount', $discount_amount);
                                                         $set('../../total_payment', $total - $discount);
 
-                                                    }),
+                                                    })->columnSpan(1),
+
+                                                TextInput::make('price')
+                                                    ->readOnly()
+                                                    ->numeric()
+                                                    ->prefix('IDR')
+                                                    ->formatStateUsing(
+                                                        fn($state, Get $get) =>
+                                                        $state ?? Product::find($get('product_id'))?->price ?? 0
+                                                    )
+                                                    ->columnSpan(2),
 
                                                 TextInput::make('subtotal')
                                                     ->readOnly()
                                                     ->numeric()
                                                     ->default(0)
-                                                    ->prefix('IDR'),
+                                                    ->prefix('IDR')
+                                                    ->columnSpan(2),
                                             ])
-                                            ->columns(2)
+                                            ->columns(5)
                                             ->hiddenLabel()
                                             ->addActionLabel(' ➕ Add Product')
 
-                                    ])
-                                    ->columnSpanFull(),
+                                    ]),
                             ])
                             ->columnSpan(4), // kiri
 

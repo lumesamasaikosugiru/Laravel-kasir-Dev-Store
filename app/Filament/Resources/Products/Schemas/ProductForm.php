@@ -105,7 +105,11 @@ class ProductForm
                         ->afterStateUpdated(function (Get $get, Set $set) {
                             static::generateSku($get, $set);
                         })
-                        ->default(null),
+                        ->createOptionForm([
+                            FileUpload::make('image'),
+                            TextInput::make('name'),
+                            Toggle::make('is_active'),
+                        ]),
 
                     Select::make('category_id')
                         ->required()
@@ -113,7 +117,12 @@ class ProductForm
                         ->afterStateUpdated(function (Get $get, Set $set) {
                             static::generateSku($get, $set);
                         })
-                        ->relationship('category', 'name', fn($query) => $query->where('is_active', true)),
+                        ->relationship('category', 'name', fn($query) => $query->where('is_active', true))
+                        ->createOptionForm([
+                            FileUpload::make('image'),
+                            TextInput::make('name'),
+                            Toggle::make('is_active'),
+                        ]),
 
                     Select::make('sub_category_id')
                         ->label('Sub Category')
@@ -130,7 +139,17 @@ class ProductForm
                         })
                         ->reactive()
                         ->disabled(fn(callable $get) => $get('category_id') === null)
-                        ->dehydrated(),
+                        ->dehydrated()
+                        ->createOptionForm([
+                            FileUpload::make('image'),
+                            Select::make('category_id')
+                                ->options(Category::pluck('name', 'id')),
+                            TextInput::make('name'),
+                            Toggle::make('is_active'),
+                        ])->createOptionUsing(function (array $data, Get $get): int {
+                            $data['category_id'] = $data['category_id'] ?? $get('category_id');
+                            return SubCategory::create($data)->getKey();
+                        }),
 
                     FileUpload::make('images')
                         // ->directory('')
